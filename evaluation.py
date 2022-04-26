@@ -43,7 +43,11 @@ class EvaluationMetric:
     def update_per_frame(self, window_idx, local_action, remote_action, perceived_action):
         # print("-window_{}".format(window_idx), "RGB action", local_action - 1)
         if window_idx == 0:  # First window
-            for i in range(self.opts.window_size):
+            # for i in range(self.opts.window_size): # Latest frame gets the action label
+            # for i in range(self.opts.window_size // 2): # Middle and next few frames
+
+            # Middle, previous and next few frames
+            for i in range(self.opts.window_size // 2 - self.opts.window_stride // 2):
                 self.y_pred_per_frame[LOCAL].append(local_action)
                 self.y_pred_per_frame[REMOTE].append(remote_action)
                 self.y_pred_per_frame[PERCEIVED].append(perceived_action)
@@ -75,7 +79,8 @@ class EvaluationMetric:
                 target = target_per_frame[idx]
                 if target == -1 or target != action_class:
                     if target != -1:
-                        print("Actions are contigous", video, action_class, target)
+                        print("Actions are contigous",
+                              video, action_class, target)
                     break
                 idx += 1
             self.stats.frames_per_action((idx - start_action))
@@ -92,7 +97,8 @@ class EvaluationMetric:
 
         target_per_frame = self.labels.get_action_per_frame(video)
         frame_len = len(self.y_pred_per_frame[LOCAL])
-        cur_frame = self.opts.window_size
+        # cur_frame = self.opts.window_size // 2
+        cur_frame = 0
         target_frame_len = len(target_per_frame)
         # print(video, "Target frame len", target_frame_len, "Predicted frame length", frame_len)
 
@@ -100,7 +106,8 @@ class EvaluationMetric:
             target = target_per_frame[cur_frame]
             # print("Target", i+1, target)
             if target == -1:  # Only consider valid actions
-                # print("TEST", video, i+1, target+1, self.y_pred_per_frame[LOCAL][i])
+                # print("TEST", video, cur_frame, target,
+                #       self.y_pred_per_frame[LOCAL][cur_frame])
                 cur_frame += 1
                 continue
             else:
@@ -111,7 +118,9 @@ class EvaluationMetric:
             # If we consider model can be too random even for the single unseen frame,
             # we should use the factor of 1.
             factor = 2
-            start_action += (self.opts.window_size // factor)
+            # start_action += (self.opts.window_size // factor)
+            # This is when middle frames are assigned with the label
+            # start_action += (self.opts.window_stride // 2)
             if start_action < end_action:
                 pred = [[] for i in range(SOLUTION_TYPES)]
                 true = []
@@ -257,6 +266,8 @@ class EvaluationMetric:
             self.y_true.extend(gts)
 
             # append per frame score
+            # @TODO: get pred and gt from the following function,
+            # because visualization needs it.
             self.append_per_frame_lst(video)
 
         # STATS: correlation and gts

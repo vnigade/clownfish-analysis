@@ -144,10 +144,10 @@ def action_per_frame_pkummd(actions):
             start = act['start_frame']
             end = act['end_frame']
             # [start, end). This is same for training as well.
-            if frame in list(range(start, end)):
+            if frame in list(range(start, end+1)):
                 targets[frame] = action + 1
     # We do not consider start_frame=0. This is consistent with training. Therefore, won't matter much.
-    del targets[0]
+    # del targets[0]
     return targets
 
 
