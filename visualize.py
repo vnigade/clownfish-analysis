@@ -6,12 +6,13 @@ import video_utils
 from fusion import ScoreFusionModule
 from opts import parse_opts
 from stats import FusionStats
-from visualizer import VisualizerOpenCV
+from visualizer import Visualizer
 
 _FUSION_METHOD = "exponential_smoothing"
 _VIDEO_LEVEL_METRIC = False
 # _VIDEOS_LST = ["0296-M", "0309-L", "312-L", "0322-L"]
 _VIDEOS_LST = ["0322-L"]
+_USE_QT: bool = True
 
 
 def read_txt_labels(class_idx):
@@ -100,8 +101,11 @@ def main():
         ret = get_predicted_actions(opts=opts, video=video, labels=labels)
         if ret is not None:
             local_predicted_actions, remote_predicted_actions, fusion_predicted_actions, true_actions = ret
-            visualizer = VisualizerOpenCV(opts, video)
-            visualizer.show(local_predicted_actions, remote_predicted_actions, fusion_predicted_actions, true_actions, txt_labels)
+            predictions = list(zip(local_predicted_actions, remote_predicted_actions, fusion_predicted_actions))
+            assert len(predictions) == len(true_actions)
+
+            visualizer = Visualizer(opts, video, use_qt=_USE_QT)
+            visualizer.display(predictions, true_actions, txt_labels)
 
 
 if __name__ == '__main__':

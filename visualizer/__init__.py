@@ -1,1 +1,1 @@
-from .opencv_visualizer import VisualizerOpenCV
+from .visualizer import Visualizer

@@ -1,5 +1,12 @@
+# Essentials
 numpy
-torch>=1.4.0
 scikit-learn==0.23.0
 requests==2.24.0
 opencv-python>=4.5.5
+
+# Qt
+PyQt5>=5.15.4
+PyQt5-stubs>=5.15.2
+
+# Torch
+torch>=1.4.0
