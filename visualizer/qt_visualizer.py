@@ -53,11 +53,15 @@ class Chart:
             axis.setGridLineVisible(False)
             axis.setRange(0.3, 0.7)
 
-    def append(self, action: int, true_action: int, frame_id: int):
+    def append(self, action: int, true_action: int, frame_id: int) -> None:
         series = self.true_series if action == true_action else self.false_series
         series.append(frame_id, Chart.SERIES_Y_VALUE)
         for axis in self.chart.axes(Qt.Horizontal):
             axis.setRange(frame_id - Chart.X_LOOK_BACK, frame_id + Chart.X_LOOK_FORWARD)
+
+    def clear(self) -> None:
+        self.true_series.clear()
+        self.false_series.clear()
 
 
 class MainWindow(QMainWindow):
@@ -250,6 +254,9 @@ class VisualizerQt:
         self._frame_id = 0
         self._evaluated_frames_count = 0
         self._correctness_counter = [0, 0, 0]
+        self._main_window.local_chart.clear()
+        self._main_window.remote_chart.clear()
+        self._main_window.fusion_chart.clear()
 
         if self._capture.isOpened():
             self._capture.set(cv.CAP_PROP_POS_AVI_RATIO, 0)
