@@ -59,8 +59,10 @@ class VisualizerQt:
         self._true_actions: VisualizerQt.ActionList = list()
         self._labels: dict[int, str] = dict()
         self._capture: Optional[cv.VideoCapture] = None
-        self._frame_id: int = 0
         self._playing: bool = False
+        self._frame_id: int = 0
+        self._evaluated_frames_count: int = 0
+        self._correctness_counter: list[int] = [0, 0, 0]
 
         self._timer: QTimer = QTimer()
         self._timer.timeout.connect(self.timeout)
@@ -102,20 +104,30 @@ class VisualizerQt:
                 # But the clownfish, local and remote predict all the frames. So, not an issue.
                 local_predictions, remote_predictions, fusion_predictions = zip(*self._predictions)
                 if self._frame_id >= (self._window_size // 2) < len(local_predictions):
+                    self._evaluated_frames_count += 1
+
                     local_action = local_predictions[self._frame_id]
                     remote_action = remote_predictions[self._frame_id]
                     fusion_action = fusion_predictions[self._frame_id]
                     true_action = self._true_actions[self._frame_id]
 
-                    self._main_window.localLabel.setText(self._labels[local_action])
-                    self._main_window.remoteLabel.setText(self._labels[remote_action])
-                    self._main_window.fusionLabel.setText(self._labels[fusion_action])
-                    self._main_window.trueLabel.setText(self._labels[true_action])
+                    self._correctness_counter[0] += 1 if local_action == true_action else 0
+                    self._correctness_counter[1] += 1 if remote_action == true_action else 0
+                    self._correctness_counter[2] += 1 if fusion_action == true_action else 0
+                    correctness_percentages = [100.0 * float(counter) / float(self._evaluated_frames_count) for counter in self._correctness_counter]
+
+                    local_label = self._labels[local_action]
+                    remote_label = self._labels[remote_action]
+                    fusion_label = self._labels[fusion_action]
+                    true_label = self._labels[true_action]
+                    self._main_window.localLabel.setText(f"{local_label} ({correctness_percentages[0]:.1f}%)")
+                    self._main_window.remoteLabel.setText(f"{remote_label} ({correctness_percentages[1]:.1f}%)")
+                    self._main_window.fusionLabel.setText(f"{fusion_label} ({correctness_percentages[2]:.1f}%)")
+                    self._main_window.trueLabel.setText(f"{true_label}")
 
                     local_css = VisualizerQt.CORRECT_CSS if local_action == true_action else VisualizerQt.WRONG_CSS
                     remote_css = VisualizerQt.CORRECT_CSS if remote_action == true_action else VisualizerQt.WRONG_CSS
                     fusion_css = VisualizerQt.CORRECT_CSS if fusion_action == true_action else VisualizerQt.WRONG_CSS
-
                     self._main_window.localLabel.setStyleSheet(local_css)
                     self._main_window.remoteLabel.setStyleSheet(remote_css)
                     self._main_window.fusionLabel.setStyleSheet(fusion_css)
@@ -138,6 +150,9 @@ class VisualizerQt:
 
     def restart(self):
         self._frame_id = 0
+        self._evaluated_frames_count = 0
+        self._correctness_counter = [0, 0, 0]
+
         if self._capture.isOpened():
             self._capture.set(cv.CAP_PROP_POS_AVI_RATIO, 0)
         self.play()
