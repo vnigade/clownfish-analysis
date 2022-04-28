@@ -8,15 +8,15 @@ import time
 
 
 class VisualizerOpenCV:
-    # Define video extension and FPS
+    # Define video extension
     VIDEO_EXTENSION: str = "avi"
-    FPS: float = 30.0
     # Define Action type
     Action = np.int64
 
-    def __init__(self, opts: argparse.Namespace, video: str):
+    def __init__(self, opts: argparse.Namespace, video: str, fps: float = 30.0):
         self._video_file: str = opts.datasets_dir + "/" + opts.datasets + f"/videos/{video}.{VisualizerOpenCV.VIDEO_EXTENSION}"
         self._window_size: int = opts.window_size
+        self._fps: float = fps
         self._window_id = "video"
 
     def show(self,
@@ -64,12 +64,12 @@ class VisualizerOpenCV:
                     pass
 
                 cv.imshow(self._window_id, frame)
-                cv.setWindowTitle(self._window_id, f"frame {frame_id} - fps: {VisualizerOpenCV.FPS:.1f}")
+                cv.setWindowTitle(self._window_id, f"Clownfish (frame {frame_id} - fps: {self._fps:.1f})")
                 if cv.waitKey(1) & 0xFF == ord("q"):
                     break
 
                 frame_id += 1
-                time.sleep(VisualizerOpenCV.FPS * 1e-3)
+                time.sleep(self._fps * 1e-3)
 
             except Exception as e:
                 print(f"Exception {str(e)}")
