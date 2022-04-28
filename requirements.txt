@@ -6,6 +6,7 @@ opencv-python>=4.5.5
 
 # Qt
 PyQt5>=5.15.4
+PyQtChart>=5.15.4
 PyQt5-stubs>=5.15.2
 
 # Torch

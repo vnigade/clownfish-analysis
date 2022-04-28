@@ -7,6 +7,10 @@ import time
 
 
 class VisualizerOpenCV:
+    """
+    An OpenCV-based visualizer.
+    """
+
     # Define video extension
     VIDEO_EXTENSION: str = "avi"
 
@@ -16,6 +20,10 @@ class VisualizerOpenCV:
     Prediction = tuple[Action, Action, Action]
     PredictionList = list[Prediction]
 
+    # =================================================================================================================================================================================================
+    # Public interface
+    # =================================================================================================================================================================================================
+
     def __init__(self, opts: argparse.Namespace, video: str, fps: float = 30.0):
         self._video_file: str = opts.datasets_dir + "/" + opts.datasets + f"/videos/{video}.{VisualizerOpenCV.VIDEO_EXTENSION}"
         self._window_size: int = opts.window_size
@@ -23,6 +31,15 @@ class VisualizerOpenCV:
         self._window_id = "video"
 
     def display(self, predictions: PredictionList, true_actions: ActionList, labels: dict[int, str]) -> None:
+        """
+        Displays the video with predicted and ground truth action labels.
+
+        :param predictions: A tuple with lists of predictions for the local, remote, and fusion model.
+        :param true_actions: A list with the ground truth actions.
+        :param labels: A dictionary mapping action classes to text labels.
+        :return: None.
+        """
+
         assert len(predictions) == len(true_actions)
         local_predictions, remote_predictions, fusion_predictions = zip(*predictions)
 

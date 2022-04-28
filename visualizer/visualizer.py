@@ -56,11 +56,12 @@ class Visualizer:
         :param labels: A dictionary mapping action classes to text labels.
         :return: Returns the exit code of the visualizer (should be passed to sys.exit).
         """
+
         assert len(predictions) == len(true_actions)
 
         return_code = 0
         if isinstance(self._visualizer, VisualizerQt):
-            self._visualizer.init(predictions, true_actions, labels)
+            self._visualizer.start(predictions, true_actions, labels)
             return_code = self._application.exec_()
         else:
             self._visualizer.display(predictions, true_actions, labels)
