@@ -1,11 +1,13 @@
-from opts import parse_opts
-import video_utils
-import siminet
-from fusion import ScoreFusionModule
-import evaluation as eval
-from stats import FusionStats
-import time
 import csv
+import cv2 as cv
+import evaluation as eval
+import siminet
+import time
+import video_utils
+
+from fusion import ScoreFusionModule
+from opts import parse_opts
+from stats import FusionStats
 
 _FUSION_METHOD = "exponential_smoothing"
 _VIDEO_LEVEL_METRIC = False
@@ -27,14 +29,12 @@ def read_txt_labels(class_idx):
     return txt_lables
 
 
-def show(opts, video, local_pred_actions, remote_pred_actions,
-         fusion_pred_actions, true_actions, txt_labels):
-    import cv2 as cv
+def show(opts, video, local_pred_actions, remote_pred_actions, fusion_pred_actions, true_actions, txt_labels):
     video_file = opts.datasets_dir + '/' + opts.datasets + \
-        f'/videos/{video}.{_EXTENSION}'
+                 f'/videos/{video}.{_EXTENSION}'
 
     cap = cv.VideoCapture(video_file)
-    if not(cap.isOpened()):
+    if not (cap.isOpened()):
         print("Cannot open ", video_file)
         return
 
@@ -49,16 +49,16 @@ def show(opts, video, local_pred_actions, remote_pred_actions,
 
             if frame_id >= (opts.window_size // 2) < len(local_pred_actions):
                 local_action_txt = txt_labels[local_pred_actions[frame_id]]
-                cv.putText(frame, f"Local: {local_action_txt}", (left_margin, gap_margin*1),
+                cv.putText(frame, f"Local: {local_action_txt}", (left_margin, gap_margin * 1),
                            cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 1)
                 remote_action_txt = txt_labels[remote_pred_actions[frame_id]]
-                cv.putText(frame, f"Remote: {remote_action_txt}", (left_margin, gap_margin*2),
+                cv.putText(frame, f"Remote: {remote_action_txt}", (left_margin, gap_margin * 2),
                            cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 1)
                 fusion_action_txt = txt_labels[fusion_pred_actions[frame_id]]
-                cv.putText(frame, f"Clownfish: {fusion_action_txt}", (left_margin, gap_margin*3),
+                cv.putText(frame, f"Clownfish: {fusion_action_txt}", (left_margin, gap_margin * 3),
                            cv.FONT_HERSHEY_SIMPLEX, 1.5, (255, 0, 0), 1)
                 true_action_txt = txt_labels[true_actions[frame_id]]
-                cv.putText(frame, f"GT: {true_action_txt}", (left_margin, gap_margin*4),
+                cv.putText(frame, f"GT: {true_action_txt}", (left_margin, gap_margin * 4),
                            cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 1)
             else:
                 # The number of frames in the videos could be higher than the number of predictions
@@ -143,7 +143,7 @@ def main():
 
     # label_file = opts.datasets_dir + '/' + opts.datasets + '/splits/pkummd.json'
     label_file = opts.datasets_dir + '/' + opts.datasets + \
-        '/splits/pkummd_cross_subject_background.json'
+                 '/splits/pkummd_cross_subject_background.json'
     class_file = opts.datasets_dir + '/' + opts.datasets + '/splits/classInd.txt'
     labels = video_utils.VideoLabels(label_file, class_file, opts.datasets)
     txt_labels = read_txt_labels(class_file)
