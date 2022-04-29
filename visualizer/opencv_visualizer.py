@@ -57,7 +57,7 @@ class VisualizerOpenCV:
                 if ret is False:
                     break
 
-                if frame_id >= (self._window_size // 2) < len(local_predictions):
+                if (self._window_size // 2) <= frame_id < len(local_predictions):
                     local_action = local_predictions[frame_id]
                     remote_action = remote_predictions[frame_id]
                     fusion_action = fusion_predictions[frame_id]

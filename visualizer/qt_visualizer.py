@@ -197,7 +197,7 @@ class VisualizerQt:
                 # ground truth actions itself. That's how the ground truth json file is generated.
                 # But the clownfish, local and remote predict all the frames. So, not an issue.
                 local_predictions, remote_predictions, fusion_predictions = zip(*self._predictions)
-                if self._frame_id >= (self._window_size // 2) < len(local_predictions):
+                if (self._window_size // 2) <= self._frame_id < len(local_predictions):
                     local_action = local_predictions[self._frame_id]
                     remote_action = remote_predictions[self._frame_id]
                     fusion_action = fusion_predictions[self._frame_id]
