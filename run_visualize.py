@@ -9,16 +9,15 @@ my_rank = "0"
 datasets_dir = "./data"
 window_size = 16
 window_stride = 4
-sim_method = "fix_ma"
+# todo: use the same default sim_method setting for all run scripts.
+# sim_method = "fix_ma"
+sim_method = "cosine"
 local_sample_size = 224
 remote_sample_size = 224
 output_prefix = "visualize"
 filter_interval = 5
 remote_lag = 1
-
-# todo: use the same default siminet setting for all run scripts.
-siminet_path = "cosine"
-
+siminet_path = "none"
 local_model = "resnet-18"
 remote_model = "resnext-101"
 split = "cross_subject_background"
