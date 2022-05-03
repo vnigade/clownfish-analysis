@@ -87,9 +87,6 @@ class MainWindow(QMainWindow):
         self.centralWidget.layout().setContentsMargins(9, 9, 9, 9)
         self.centralWidget.layout().setSpacing(6)
 
-        # Setup image widget layout
-        self.imageWidget.layout().setAlignment(Qt.AlignTop)
-
         # Setup chart series and views
         self.local_chart: Chart = Chart("Local")
         self.fusion_chart: Chart = Chart("Clownfish")
@@ -143,9 +140,10 @@ class MainWindow(QMainWindow):
         height, width, channels = frame.shape
         assert channels == 3
         image = QImage(frame.data, width, height, 3 * width, QImage.Format_BGR888)
+        label_width, label_height = self.imageLabel.width(), self.imageLabel.height()
         pixmap = QPixmap().fromImage(image)
+        pixmap = pixmap.scaled(label_width - 2, label_height - 2, Qt.KeepAspectRatio)
         self.imageLabel.setPixmap(pixmap)
-        self.imageLabel.setFixedSize(width, height)
         self.imageLabel.setMaximumSize(width, height)
 
     def set_true_action(self, action: str) -> None:
