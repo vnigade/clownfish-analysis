@@ -158,6 +158,11 @@ class MainWindow(QMainWindow):
     def set_remote_prediction(self, action: str, percentage: float, correct: bool) -> None:
         self._update_labels(self.remoteActionLabel, self.remotePercentageLabel, action, percentage, correct)
 
+    def clear_charts(self) -> None:
+        self.local_chart.clear()
+        self.fusion_chart.clear()
+        self.remote_chart.clear()
+
     @staticmethod
     def _update_labels(action_label: QLabel, percentage_label: QLabel, action: str, percentage: float, correct: bool) -> None:
         css = MainWindow.TRUE_CSS if correct else MainWindow.FALSE_CSS
@@ -206,8 +211,6 @@ class VisualizerQt:
         self._capture: Optional[cv.VideoCapture] = None
         self._playing: bool = False
         self._frame_id: int = 0
-        self._evaluated_frames_count: int = 0
-        self._correctness_counter: list[int] = [0, 0, 0]
 
         # Load video capture and extract meta information
         self._capture: cv.VideoCapture = cv.VideoCapture(self._video_file)
@@ -246,8 +249,15 @@ class VisualizerQt:
         self._predictions = predictions
         self._true_actions = true_actions
         self._labels = labels
-        self._main_window.resize_labels_to_required_size(labels.values())
+        self._main_window.resize_labels_to_required_size(list(labels.values()))
 
+        # Precompute prediction correctness
+        local_predictions, remote_predictions, fusion_predictions = zip(*self._predictions)
+        self._local_correct_frame_counts = self._compute_correct_frame_percentages(local_predictions, true_actions)
+        self._remote_correct_frame_counts = self._compute_correct_frame_percentages(remote_predictions, true_actions)
+        self._fusion_correct_frame_counts = self._compute_correct_frame_percentages(fusion_predictions, true_actions)
+
+        # Start playing the video
         if self._capture.isOpened():
             self._restart()
         else:
@@ -257,6 +267,15 @@ class VisualizerQt:
     # =================================================================================================================================================================================================
     # Private methods
     # =================================================================================================================================================================================================
+
+    def _compute_correct_frame_percentages(self, predictions: ActionList, true_actions: ActionList) -> list[float]:
+        offset = self._window_size // 2
+        correct = np.array(predictions) == np.array(true_actions)
+        correct = correct[offset:]
+        counts = np.cumsum(correct.astype(np.int))
+        percentages = np.zeros(len(predictions), dtype=np.float32)
+        percentages[offset:] = 100.0 * counts.astype(np.float32) / (np.arange(len(counts), dtype=np.float32) + 1)
+        return percentages.tolist()
 
     def _timeout(self) -> None:
         if self._playing:
@@ -277,17 +296,11 @@ class VisualizerQt:
                     fusion_action = fusion_predictions[self._frame_id]
                     remote_action = remote_predictions[self._frame_id]
 
-                    self._evaluated_frames_count += 1
-                    self._correctness_counter[0] += 1 if local_action == true_action else 0
-                    self._correctness_counter[1] += 1 if fusion_action == true_action else 0
-                    self._correctness_counter[2] += 1 if remote_action == true_action else 0
-                    correctness_percentages = [100.0 * float(counter) / float(self._evaluated_frames_count) for counter in self._correctness_counter]
-
                     # Update prediction widgets
                     self._main_window.set_true_action(self._labels[true_action])
-                    self._main_window.set_local_prediction(self._labels[local_action], correctness_percentages[0], local_action == true_action)
-                    self._main_window.set_fusion_prediction(self._labels[fusion_action], correctness_percentages[1], fusion_action == true_action)
-                    self._main_window.set_remote_prediction(self._labels[remote_action], correctness_percentages[2], remote_action == true_action)
+                    self._main_window.set_local_prediction(self._labels[local_action], self._local_correct_frame_counts[self._frame_id], local_action == true_action)
+                    self._main_window.set_fusion_prediction(self._labels[fusion_action], self._fusion_correct_frame_counts[self._frame_id], fusion_action == true_action)
+                    self._main_window.set_remote_prediction(self._labels[remote_action], self._remote_correct_frame_counts[self._frame_id], remote_action == true_action)
 
                     self._main_window.local_chart.append(local_action, true_action, self._frame_id)
                     self._main_window.fusion_chart.append(fusion_action, true_action, self._frame_id)
@@ -313,12 +326,7 @@ class VisualizerQt:
     def _restart(self) -> None:
         self._frame_id = 0
         self._main_window.set_frame_index(self._frame_id)
-
-        self._evaluated_frames_count = 0
-        self._correctness_counter = [0, 0, 0]
-        self._main_window.local_chart.clear()
-        self._main_window.fusion_chart.clear()
-        self._main_window.remote_chart.clear()
+        self._main_window.clear_charts()
 
         if self._capture.isOpened():
             self._capture.set(cv.CAP_PROP_POS_AVI_RATIO, 0)
