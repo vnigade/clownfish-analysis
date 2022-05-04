@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1727</width>
-    <height>1222</height>
+    <width>1600</width>
+    <height>1200</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
@@ -20,19 +26,23 @@
    <string>Clownfish</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">QWidget#centralWidget { 
-	background-color: white; 
-}</string>
+    <string notr="true"/>
    </property>
    <layout class="QVBoxLayout" name="centralLayout">
     <item>
      <widget class="QWidget" name="contentWidget" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -51,28 +61,55 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="imageLabel">
+        <widget class="QWidget" name="imageWidget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>3</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border: 1px solid black;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-         </property>
+         <layout class="QVBoxLayout" name="imageWidgetLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="imageLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -100,7 +137,6 @@
             <property name="font">
              <font>
               <pointsize>14</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -115,10 +151,13 @@
           <item>
            <widget class="QWidget" name="predictionsWidget" native="true">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
             </property>
             <layout class="QGridLayout" name="predictionsLayout">
              <property name="leftMargin">
@@ -133,10 +172,13 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
+             <property name="verticalSpacing">
+              <number>3</number>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="localCaptionLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>2</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -145,7 +187,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -157,7 +198,7 @@
              <item row="0" column="1">
               <widget class="QLabel" name="localActionLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>3</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -166,7 +207,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -178,7 +218,7 @@
              <item row="4" column="0">
               <widget class="QLabel" name="fusionCaptionLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>2</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -187,7 +227,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -199,7 +238,7 @@
              <item row="7" column="1">
               <widget class="QLabel" name="remoteActionLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>3</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -208,7 +247,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -220,7 +258,7 @@
              <item row="7" column="0">
               <widget class="QLabel" name="remoteCaptionLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>2</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -229,7 +267,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -241,17 +278,20 @@
              <item row="2" column="0" colspan="3">
               <widget class="QWidget" name="localChartWidget" native="true">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid black;</string>
                </property>
               </widget>
              </item>
              <item row="4" column="1">
               <widget class="QLabel" name="fusionActionLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>3</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -260,7 +300,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -272,7 +311,7 @@
              <item row="4" column="2">
               <widget class="QLabel" name="fusionPercentageLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>1</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -281,7 +320,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -293,7 +331,7 @@
              <item row="0" column="2">
               <widget class="QLabel" name="localPercentageLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>1</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -302,7 +340,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -314,7 +351,7 @@
              <item row="7" column="2">
               <widget class="QLabel" name="remotePercentageLabel">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>1</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -323,7 +360,6 @@
                 <font>
                  <family>Calibri</family>
                  <pointsize>14</pointsize>
-                 <weight>50</weight>
                  <bold>false</bold>
                 </font>
                </property>
@@ -335,17 +371,20 @@
              <item row="8" column="0" colspan="3">
               <widget class="QWidget" name="remoteChartWidget" native="true">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid black;</string>
                </property>
               </widget>
              </item>
              <item row="5" column="0" colspan="3">
               <widget class="QWidget" name="fusionChartWidget" native="true">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -356,6 +395,9 @@
                  <height>0</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid black;</string>
+               </property>
               </widget>
              </item>
             </layout>
@@ -365,6 +407,9 @@
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -383,7 +428,7 @@
     <item>
      <widget class="QWidget" name="bottomBarWidget" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -418,7 +463,7 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>1452</width>
+              <width>40</width>
               <height>20</height>
              </size>
             </property>
@@ -451,8 +496,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1727</width>
-     <height>30</height>
+     <width>1600</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>

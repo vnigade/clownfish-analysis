@@ -23,6 +23,7 @@ class Chart:
     SERIES_Y_VALUE: float = 0.0
     X_LOOK_BACK: float = 50.0
     X_LOOK_FORWARD: float = 10.0
+    MAXIMUM_CHART_HEIGHT: float = 40.0
 
     # Define colors for correct and wrong predictions
     TRUE_COLOR: QColor = Qt.green
@@ -41,6 +42,7 @@ class Chart:
         self.chart.setBackgroundRoundness(0)
         self.chart.legend().hide()
         self.chart.layout().setContentsMargins(0, 0, 0, 0)
+        self.chart.setMaximumHeight(Chart.MAXIMUM_CHART_HEIGHT)
 
         self.true_series.setMarkerShape(QScatterSeries.MarkerShapeRectangle)
         self.false_series.setMarkerShape(QScatterSeries.MarkerShapeRectangle)
@@ -86,6 +88,9 @@ class MainWindow(QMainWindow):
         self.centralWidget.layout().setContentsMargins(9, 9, 9, 9)
         self.centralWidget.layout().setSpacing(6)
 
+        # Make the video image be aligned on top
+        self.imageWidget.layout().setAlignment(Qt.AlignTop)
+
         # Setup chart series and views
         self.local_chart: Chart = Chart("Local")
         self.fusion_chart: Chart = Chart("Clownfish")
@@ -128,14 +133,15 @@ class MainWindow(QMainWindow):
         self.frameScrollbar.setSliderPosition(frame_index)
 
     def set_frame_image(self, frame: np.ndarray) -> None:
-        height, width, channels = frame.shape
-        assert channels == 3
-        image = QImage(frame.data, width, height, 3 * width, QImage.Format_BGR888)
-        label_width, label_height = self.imageLabel.width(), self.imageLabel.height()
-        pixmap = QPixmap().fromImage(image)
-        pixmap = pixmap.scaled(label_width - 2, label_height - 2, Qt.KeepAspectRatio)
-        self.imageLabel.setPixmap(pixmap)
-        self.imageLabel.setMaximumSize(width, height)
+        if self.isVisible():
+            height, width, channels = frame.shape
+            assert channels == 3
+            image = QImage(frame.data, width, height, channels * width, QImage.Format_BGR888)
+            label_width, label_height = self.imageLabel.width(), self.imageLabel.height()
+            frame_width = self.imageLabel.frameWidth()
+            pixmap = QPixmap().fromImage(image)
+            pixmap = pixmap.scaled(label_width - 2 * frame_width, label_height - 2 * frame_width, Qt.KeepAspectRatio)
+            self.imageLabel.setPixmap(pixmap)
 
     def set_true_action(self, action: str) -> None:
         self.trueLabel.setText(action)
