@@ -1,9 +1,10 @@
 """
 A Clownfish visualizer using OpenCV.
 """
-import argparse
 import cv2 as cv
 import time
+
+from .types import ActionList, ActionLabels, PredictionList
 
 
 class VisualizerOpenCV:
@@ -11,49 +12,35 @@ class VisualizerOpenCV:
     An OpenCV-based visualizer.
     """
 
-    # Define video extension
-    VIDEO_EXTENSION: str = "avi"
-
-    # Define Action and Prediction and list types
-    Action = int
-    ActionList = list[Action]
-    Prediction = tuple[Action, Action, Action]
-    PredictionList = list[Prediction]
-
     # =================================================================================================================================================================================================
     # Public interface
     # =================================================================================================================================================================================================
 
-    def __init__(self, opts: argparse.Namespace, video: str, fps: float = 30.0):
-        self._video_file: str = opts.datasets_dir + "/" + opts.datasets + f"/videos/{video}.{VisualizerOpenCV.VIDEO_EXTENSION}"
-        self._window_size: int = opts.window_size
-        self._fps: float = fps
-        self._window_id = "video"
+    def __init__(self, video: cv.VideoCapture, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: float = 30.0):
+        assert len(predictions) == len(true_actions)
+        self._video: cv.VideoCapture = video
+        self._window_size: int = window_size
+        self._target_fps: float = target_fps
+        self._predictions: PredictionList = predictions
+        self._true_actions: ActionList = true_actions
+        self._label_dict: ActionLabels = label_dict
+        self._window_id: str = "video"
 
-    def display(self, predictions: PredictionList, true_actions: ActionList, labels: dict[int, str]) -> None:
+    def start(self) -> None:
         """
-        Displays the video with predicted and ground truth action labels.
+        Starts displaying of the video with predicted and ground truth action labels.
 
-        :param predictions: A tuple with lists of predictions for the local, remote, and fusion model.
-        :param true_actions: A list with the ground truth actions.
-        :param labels: A dictionary mapping action classes to text labels.
         :return: None.
         """
 
-        assert len(predictions) == len(true_actions)
-        local_predictions, remote_predictions, fusion_predictions = zip(*predictions)
-
-        cap = cv.VideoCapture(self._video_file)
-        if not (cap.isOpened()):
-            print("Cannot open ", self._video_file)
-            return
-
+        local_predictions, remote_predictions, fusion_predictions = zip(*self._predictions)
         frame_id = 0
         left_margin = 10
         gap_margin = 75
+
         while True:
             try:
-                ret, frame = cap.read()
+                ret, frame = self._video.read()
                 if ret is False:
                     break
 
@@ -61,12 +48,12 @@ class VisualizerOpenCV:
                     local_action = local_predictions[frame_id]
                     remote_action = remote_predictions[frame_id]
                     fusion_action = fusion_predictions[frame_id]
-                    true_action = true_actions[frame_id]
+                    true_action = self._true_actions[frame_id]
 
-                    local_action_txt = labels[local_action]
-                    remote_action_txt = labels[remote_action]
-                    fusion_action_txt = labels[fusion_action]
-                    true_action_txt = labels[true_action]
+                    local_action_txt = self._label_dict[local_action]
+                    remote_action_txt = self._label_dict[remote_action]
+                    fusion_action_txt = self._label_dict[fusion_action]
+                    true_action_txt = self._label_dict[true_action]
 
                     cv.putText(frame, f"Local: {local_action_txt}", (left_margin, gap_margin * 1), cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 1)
                     cv.putText(frame, f"Remote: {remote_action_txt}", (left_margin, gap_margin * 2), cv.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 1)
@@ -81,17 +68,16 @@ class VisualizerOpenCV:
                     pass
 
                 cv.imshow(self._window_id, frame)
-                cv.setWindowTitle(self._window_id, f"Clownfish (frame {frame_id} - fps: {self._fps:.1f})")
+                cv.setWindowTitle(self._window_id, f"Clownfish (frame {frame_id} - fps: {self._target_fps:.1f})")
                 if cv.waitKey(1) & 0xFF == ord("q"):
                     break
 
                 frame_id += 1
-                time.sleep(self._fps * 1e-3)
+                time.sleep(self._target_fps * 1e-3)
 
             except Exception as e:
                 print(f"Exception {str(e)}")
                 break
 
-        print(f"Total frames: {frame_id}, {len(local_predictions)}, {len(true_actions)}")
-        cap.release()
+        print(f"Total frames: {frame_id}, {len(local_predictions)}, {len(self._true_actions)}")
         cv.destroyAllWindows()

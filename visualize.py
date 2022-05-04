@@ -12,6 +12,8 @@ _FUSION_METHOD = "exponential_smoothing"
 _VIDEO_LEVEL_METRIC = False
 # _VIDEOS_LST = ["0296-M", "0309-L", "312-L", "0322-L"]
 _VIDEOS_LST = ["0322-L"]
+_VIDEO_EXTENSION: str = "avi"
+_TARGET_FPS: float = 30.0
 _USE_QT: bool = True
 
 
@@ -104,8 +106,14 @@ def main():
             predictions = list(zip(local_predicted_actions, remote_predicted_actions, fusion_predicted_actions))
             assert len(predictions) == len(true_actions)
 
-            visualizer = Visualizer(opts, video, use_qt=_USE_QT)
-            visualizer.display(predictions, true_actions, txt_labels)
+            video_file = opts.datasets_dir + "/" + opts.datasets + f"/videos/{video}.{_VIDEO_EXTENSION}"
+            window_size = opts.window_size
+
+            try:
+                visualizer = Visualizer(video_file, window_size, predictions, true_actions, txt_labels, target_fps=_TARGET_FPS, use_qt=_USE_QT)
+                visualizer.display()
+            except Visualizer.VideoError as e:
+                print(f"Cannot open video file: {e.filename}")
 
 
 if __name__ == '__main__':
