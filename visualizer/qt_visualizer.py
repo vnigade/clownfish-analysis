@@ -130,7 +130,8 @@ class MainWindow(QMainWindow):
         self.frameScrollbar.setMaximum(frame_count - 1)
 
     def set_frame_index(self, frame_index: int) -> None:
-        self.frameScrollbar.setSliderPosition(frame_index)
+        if not self.frameScrollbar.isSliderDown():
+            self.frameScrollbar.setSliderPosition(frame_index)
 
     def set_frame_image(self, frame: np.ndarray) -> None:
         if self.isVisible():
@@ -204,6 +205,7 @@ class VisualizerQt:
         self._main_window = MainWindow(*args)
         self._main_window.playButton.clicked.connect(self._play_or_pause)
         self._main_window.restartButton.clicked.connect(self._restart)
+        self._main_window.frameScrollbar.valueChanged.connect(self._jump_to_frame)
         self._main_window.set_frame_count(self._frame_count)
         self._main_window.resize_labels_to_required_size(list(label_dict.values()))
 
@@ -295,7 +297,7 @@ class VisualizerQt:
         self._main_window.clear_charts()
 
         assert self._video.isOpened()
-        self._video.set(cv.CAP_PROP_POS_AVI_RATIO, 0)
+        self._video.set(cv.CAP_PROP_POS_FRAMES, 0)
         self._play()
 
     def _play_or_pause(self) -> None:
@@ -307,3 +309,16 @@ class VisualizerQt:
     def _next_frame(self) -> None:
         self._frame_id += 1
         self._main_window.set_frame_index(self._frame_id)
+
+    def _jump_to_frame(self, frame: int) -> None:
+        assert 0 <= frame <= self._frame_count
+        self._frame_id = frame
+        self._main_window.set_frame_index(self._frame_id)
+        # todo: update the charts properly
+        self._main_window.clear_charts()
+
+        assert self._video.isOpened()
+        self._video.set(cv.CAP_PROP_POS_FRAMES, frame)
+
+        if not self._playing:
+            self._play()
