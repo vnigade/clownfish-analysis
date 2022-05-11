@@ -282,6 +282,12 @@ class VisualizerQt:
                     self._main_window.local_chart.append(local_action, true_action, self._frame_id)
                     self._main_window.fusion_chart.append(fusion_action, true_action, self._frame_id)
                     self._main_window.remote_chart.append(remote_action, true_action, self._frame_id)
+                else:
+                    self._main_window.set_true_action("")
+                    self._main_window.set_main_prediction("", False)
+                    self._main_window.set_local_prediction("", 0.0, False)
+                    self._main_window.set_fusion_prediction("", 0.0, False)
+                    self._main_window.set_remote_prediction("", 0.0, False)
 
                 # Update window title
                 self._main_window.setWindowTitle(f"Clownfish (frame {self._frame_id} / {self._frame_count} - fps: {self._target_fps:.1f})")
