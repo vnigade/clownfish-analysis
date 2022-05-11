@@ -175,6 +175,7 @@ class MainWindow(QMainWindow):
     def _toggle_details(self, visible: bool):
         self.detailsWidget.setVisible(visible)
         self.detailsButton.setText("Hide Details" if visible else "Show Details")
+        self.predictionLabel.setVisible(not visible)
 
 
 class VisualizerQt:
