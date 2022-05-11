@@ -76,8 +76,8 @@ class MainWindow(QMainWindow):
     """
 
     # Define coloring stylesheets for correct and wrong predictions
-    TRUE_CSS: str = "color: green;"
-    FALSE_CSS: str = "color: red;"
+    TRUE_CSS: str = "background-color: green;"
+    FALSE_CSS: str = "background-color: red;"
 
     def __init__(self, *args):
         super(MainWindow, self).__init__(*args)
@@ -88,8 +88,9 @@ class MainWindow(QMainWindow):
         self.centralWidget.layout().setContentsMargins(9, 9, 9, 9)
         self.centralWidget.layout().setSpacing(6)
 
-        # Make the video image be aligned on top
-        self.imageWidget.layout().setAlignment(Qt.AlignTop)
+        # Hide details on first show and setup details button
+        self.detailsWidget.hide()
+        self.detailsButton.clicked.connect(self._toggle_details)
 
         # Setup chart series and views
         self.local_chart: Chart = Chart("Local")
@@ -121,7 +122,6 @@ class MainWindow(QMainWindow):
         required_size = max(sizes)
 
         # Set the minimum size
-        print(required_size)
         self.localActionLabel.setMinimumWidth(required_size)
         self.fusionActionLabel.setMinimumWidth(required_size)
         self.remoteActionLabel.setMinimumWidth(required_size)
@@ -143,9 +143,14 @@ class MainWindow(QMainWindow):
             pixmap = QPixmap().fromImage(image)
             pixmap = pixmap.scaled(label_width - 2 * frame_width, label_height - 2 * frame_width, Qt.KeepAspectRatio)
             self.imageLabel.setPixmap(pixmap)
+            self.imageLabel.setMinimumSize(1, 1)
 
     def set_true_action(self, action: str) -> None:
         self.trueLabel.setText(action)
+
+    def set_main_prediction(self, action: str, correct: bool) -> None:
+        self.predictionLabel.setText(action)
+        self.predictionLabel.setStyleSheet(MainWindow.TRUE_CSS if correct else MainWindow.FALSE_CSS)
 
     def set_local_prediction(self, action: str, percentage: float, correct: bool) -> None:
         self._update_labels(self.localActionLabel, self.localPercentageLabel, action, percentage, correct)
@@ -163,11 +168,13 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def _update_labels(action_label: QLabel, percentage_label: QLabel, action: str, percentage: float, correct: bool) -> None:
-        css = MainWindow.TRUE_CSS if correct else MainWindow.FALSE_CSS
         action_label.setText(action)
+        action_label.setStyleSheet(MainWindow.TRUE_CSS if correct else MainWindow.FALSE_CSS)
         percentage_label.setText(f"{percentage:.1f}%")
-        action_label.setStyleSheet(css)
-        percentage_label.setStyleSheet(css)
+
+    def _toggle_details(self, visible: bool):
+        self.detailsWidget.setVisible(visible)
+        self.detailsButton.setText("Hide Details" if visible else "Show Details")
 
 
 class VisualizerQt:
@@ -266,6 +273,7 @@ class VisualizerQt:
 
                     # Update prediction widgets
                     self._main_window.set_true_action(self._label_dict[true_action])
+                    self._main_window.set_main_prediction(self._label_dict[fusion_action], fusion_action == true_action)
                     self._main_window.set_local_prediction(self._label_dict[local_action], self._local_correct_frame_counts[self._frame_id], local_action == true_action)
                     self._main_window.set_fusion_prediction(self._label_dict[fusion_action], self._fusion_correct_frame_counts[self._frame_id], fusion_action == true_action)
                     self._main_window.set_remote_prediction(self._label_dict[remote_action], self._remote_correct_frame_counts[self._frame_id], remote_action == true_action)
