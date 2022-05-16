@@ -26,8 +26,8 @@ class Chart:
     MAXIMUM_CHART_HEIGHT: float = 40.0
 
     # Define colors for correct and wrong predictions
-    TRUE_COLOR: QColor = Qt.green
-    FALSE_COLOR: str = Qt.red
+    TRUE_COLOR: QColor = QColor("#80c342")
+    FALSE_COLOR: QColor = QColor("#e37070")
 
     def __init__(self, title: str):
         self.true_series: QScatterSeries = QScatterSeries()
@@ -76,8 +76,10 @@ class MainWindow(QMainWindow):
     """
 
     # Define coloring stylesheets for correct and wrong predictions
-    TRUE_CSS: str = "background-color: green; border: 1px solid black;"
-    FALSE_CSS: str = "background-color: red; border: 1px solid black;"
+    LIGHT_GREEN: str = "#80c342"
+    LIGHT_RED: str = "#e37070"
+    TRUE_CSS: str = f"background-color: {LIGHT_GREEN}; border: 1px solid black;"
+    FALSE_CSS: str = f"background-color: {LIGHT_RED}; border: 1px solid black;"
 
     def __init__(self, *args):
         super(MainWindow, self).__init__(*args)
