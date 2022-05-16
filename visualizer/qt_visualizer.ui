@@ -54,9 +54,6 @@
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>
-      <property name="styleSheet">
-       <string notr="true">QWidget#MainWindow { background-color: red; }</string>
-      </property>
       <layout class="QVBoxLayout" name="contentWidgetLayout">
        <property name="spacing">
         <number>12</number>
@@ -186,7 +183,7 @@
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">#infoWidget { border: 2px solid black; }</string>
+          <string notr="true"/>
          </property>
          <layout class="QVBoxLayout" name="sidebarLayout">
           <property name="leftMargin">
@@ -218,7 +215,8 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: black; background-color: lightgray;</string>
+             <string notr="true">background-color: lightgray;
+border: 1px solid black;</string>
             </property>
             <property name="text">
              <string/>
@@ -509,9 +507,6 @@
                  <height>0</height>
                 </size>
                </property>
-               <property name="styleSheet">
-                <string notr="true">border: 1px solid black;</string>
-               </property>
               </widget>
              </item>
              <item row="0" column="3">
@@ -528,9 +523,6 @@
                  <height>0</height>
                 </size>
                </property>
-               <property name="styleSheet">
-                <string notr="true">border: 1px solid black;</string>
-               </property>
               </widget>
              </item>
              <item row="7" column="3">
@@ -546,9 +538,6 @@
                  <width>0</width>
                  <height>0</height>
                 </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">border: 1px solid black;</string>
                </property>
               </widget>
              </item>

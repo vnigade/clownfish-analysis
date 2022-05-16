@@ -76,8 +76,8 @@ class MainWindow(QMainWindow):
     """
 
     # Define coloring stylesheets for correct and wrong predictions
-    TRUE_CSS: str = "background-color: green;"
-    FALSE_CSS: str = "background-color: red;"
+    TRUE_CSS: str = "background-color: green; border: 1px solid black;"
+    FALSE_CSS: str = "background-color: red; border: 1px solid black;"
 
     def __init__(self, *args):
         super(MainWindow, self).__init__(*args)
