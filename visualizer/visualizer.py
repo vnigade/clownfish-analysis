@@ -31,7 +31,7 @@ class Visualizer:
     # Public interface
     # =================================================================================================================================================================================================
 
-    def __init__(self, video_file: str, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: float = 30.0, use_qt: bool = True, console_arguments: Optional[list[str]] = None):
+    def __init__(self, video_file: str, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: int = 30, use_qt: bool = True, console_arguments: Optional[list[str]] = None):
         # Define and initialize members
         self._visualizer: Union[VisualizerOpenCV, VisualizerQt]
         self._qt_application: Optional[QApplication] = None

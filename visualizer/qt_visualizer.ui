@@ -574,6 +574,39 @@ border: 1px solid black;</string>
        <item>
         <widget class="QWidget" name="controlButtonWidget" native="true">
          <layout class="QGridLayout" name="controlButtonLayout">
+          <item row="1" column="5">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>200</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="8">
+           <widget class="QPushButton" name="restartButton">
+            <property name="text">
+             <string>Restart</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="6">
+           <widget class="QPushButton" name="detailsButton">
+            <property name="text">
+             <string>Show Details</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <spacer name="horizontalSpacer">
             <property name="orientation">
@@ -588,13 +621,25 @@ border: 1px solid black;</string>
            </spacer>
           </item>
           <item row="1" column="3">
-           <widget class="QPushButton" name="restartButton">
-            <property name="text">
-             <string>Restart</string>
+           <widget class="QSlider" name="framerateSlider">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="7">
            <widget class="QPushButton" name="playButton">
             <property name="text">
              <string>Play</string>
@@ -602,11 +647,27 @@ border: 1px solid black;</string>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QPushButton" name="detailsButton">
+           <widget class="QLabel" name="framerateCaptionLabel">
             <property name="text">
-             <string>Show Details</string>
+             <string>Frame Rate</string>
             </property>
-            <property name="checkable">
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QLineEdit" name="framerateEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>

@@ -16,11 +16,11 @@ class VisualizerOpenCV:
     # Public interface
     # =================================================================================================================================================================================================
 
-    def __init__(self, video: cv.VideoCapture, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: float = 30.0):
+    def __init__(self, video: cv.VideoCapture, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: int = 30):
         assert len(predictions) == len(true_actions)
         self._video: cv.VideoCapture = video
         self._window_size: int = window_size
-        self._target_fps: float = target_fps
+        self._target_fps: int = target_fps
         self._predictions: PredictionList = predictions
         self._true_actions: ActionList = true_actions
         self._label_dict: ActionLabels = label_dict
@@ -68,12 +68,12 @@ class VisualizerOpenCV:
                     pass
 
                 cv.imshow(self._window_id, frame)
-                cv.setWindowTitle(self._window_id, f"Clownfish (frame {frame_id} - fps: {self._target_fps:.1f})")
+                cv.setWindowTitle(self._window_id, f"Clownfish (frame {frame_id} - fps: {self._target_fps})")
                 if cv.waitKey(1) & 0xFF == ord("q"):
                     break
 
                 frame_id += 1
-                time.sleep(self._target_fps * 1e-3)
+                time.sleep(float(self._target_fps) * 1e-3)
 
             except Exception as e:
                 print(f"Exception {str(e)}")

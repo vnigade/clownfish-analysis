@@ -13,7 +13,7 @@ _VIDEO_LEVEL_METRIC = False
 # _VIDEOS_LST = ["0296-M", "0309-L", "312-L", "0322-L"]
 _VIDEOS_LST = ["0322-L"]
 _VIDEO_EXTENSION: str = "avi"
-_TARGET_FPS: float = 30.0
+_TARGET_FPS: int = 30
 _USE_QT: bool = True
 
 

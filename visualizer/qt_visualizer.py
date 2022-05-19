@@ -94,6 +94,9 @@ class MainWindow(QMainWindow):
         self.detailsWidget.hide()
         self.detailsButton.clicked.connect(self._toggle_details)
 
+        # Update frame rate edit with slider
+        self.framerateSlider.valueChanged.connect(lambda x: self.framerateEdit.setText(f"{x}"))
+
         # Setup chart series and views
         self.local_chart: Chart = Chart("Local")
         self.fusion_chart: Chart = Chart("Clownfish")
@@ -127,6 +130,10 @@ class MainWindow(QMainWindow):
         self.localActionLabel.setMinimumWidth(required_size)
         self.fusionActionLabel.setMinimumWidth(required_size)
         self.remoteActionLabel.setMinimumWidth(required_size)
+
+    def setup_framerate(self, min_rate: int, max_rate: int, current_rate: int) -> None:
+        self.framerateSlider.setRange(min_rate, max_rate)
+        self.framerateSlider.setValue(current_rate)
 
     def set_frame_count(self, frame_count: int) -> None:
         self.frameScrollbar.setMaximum(frame_count - 1)
@@ -189,14 +196,15 @@ class VisualizerQt:
     # Public interface
     # =================================================================================================================================================================================================
 
-    def __init__(self, video: cv.VideoCapture, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: float = 30.0, *args):
+    def __init__(self, video: cv.VideoCapture, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: int = 30, *args):
         assert video.isOpened()
         self._video: cv.VideoCapture = video
         self._window_size: int = window_size
         self._predictions: PredictionList = predictions
         self._true_actions: ActionList = true_actions
         self._label_dict: ActionLabels = label_dict
-        self._target_fps: float = target_fps
+        self._target_fps: int = target_fps
+        self._fps: int = target_fps
 
         # Precompute the prediction performance (in correct frames percentage) for each prediction model
         local_predictions, remote_predictions, fusion_predictions = zip(*predictions)
@@ -213,16 +221,18 @@ class VisualizerQt:
 
         # Setup main window
         self._main_window = MainWindow(*args)
+        self._main_window.set_frame_count(self._frame_count)
+        self._main_window.resize_labels_to_required_size(list(label_dict.values()))
+        self._main_window.setup_framerate(1, target_fps * 4, self._fps)
         self._main_window.playButton.clicked.connect(self._play_or_pause)
         self._main_window.restartButton.clicked.connect(self._restart)
         self._main_window.frameScrollbar.valueChanged.connect(self._jump_to_frame)
-        self._main_window.set_frame_count(self._frame_count)
-        self._main_window.resize_labels_to_required_size(list(label_dict.values()))
+        self._main_window.framerateSlider.valueChanged.connect(self._adjust_fps)
 
         # Setup and start frame timer
         self._timer: QTimer = QTimer()
         self._timer.timeout.connect(self._timeout)
-        interval = int(1000.0 / self._target_fps)
+        interval = int(1000.0 / float(self._fps))
         self._timer.start(interval)
 
     def start(self) -> None:
@@ -292,7 +302,7 @@ class VisualizerQt:
                     self._main_window.set_remote_prediction("", 0.0, False)
 
                 # Update window title
-                self._main_window.setWindowTitle(f"Clownfish (frame {self._frame_id} / {self._frame_count} - fps: {self._target_fps:.1f})")
+                self._main_window.setWindowTitle(f"Clownfish (frame {self._frame_id} / {self._frame_count} - fps: {self._fps})")
 
                 # Update frame index
                 self._next_frame()
@@ -339,3 +349,8 @@ class VisualizerQt:
 
         if not self._playing:
             self._play()
+
+    def _adjust_fps(self, fps: int) -> None:
+        self._fps = fps
+        interval = int(1000.0 / float(fps))
+        self._timer.start(interval)
