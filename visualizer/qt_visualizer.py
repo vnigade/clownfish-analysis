@@ -2,14 +2,15 @@
 A Clownfish visualizer using Qt.
 """
 import cv2 as cv
+import numpy as np
 import pathlib
 
-import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 from PyQt5.QtChart import QChart, QChartView, QScatterSeries
+from typing import Optional
 
 from .types import ActionList, ActionLabels, PredictionList
 
@@ -223,11 +224,14 @@ class VisualizerQt:
         self._main_window = MainWindow(*args)
         self._main_window.set_frame_count(self._frame_count)
         self._main_window.resize_labels_to_required_size(list(label_dict.values()))
-        self._main_window.setup_framerate(1, target_fps * 4, self._fps)
+        self._main_window.setup_framerate(1, target_fps * 3, self._fps)
         self._main_window.playButton.clicked.connect(self._play_or_pause)
         self._main_window.restartButton.clicked.connect(self._restart)
         self._main_window.frameScrollbar.valueChanged.connect(self._jump_to_frame)
         self._main_window.framerateSlider.valueChanged.connect(self._adjust_fps)
+
+        # Next frame cache
+        self._next_frame_cache: Optional[tuple[bool, np.ndarray]] = None
 
         # Setup and start frame timer
         self._timer: QTimer = QTimer()
@@ -266,8 +270,14 @@ class VisualizerQt:
 
     def _timeout(self) -> None:
         if self._playing:
-            assert self._video.isOpened()
-            success, frame = self._video.read()
+            # Read frame from frame cache or directly from the video capture
+            if self._next_frame_cache:
+                success, frame = self._next_frame_cache
+            else:
+                assert self._video.isOpened()
+                success, frame = self._video.read()
+
+            # Process frame
             if success:
                 # Update the video image
                 self._main_window.set_frame_image(frame)
@@ -306,6 +316,11 @@ class VisualizerQt:
 
                 # Update frame index
                 self._next_frame()
+
+                # Read next video frame into the cache
+                assert self._video.isOpened()
+                self._next_frame_cache = self._video.read()
+
             else:
                 # todo: add automatic restart?
                 self._playing = False
@@ -325,6 +340,8 @@ class VisualizerQt:
 
         assert self._video.isOpened()
         self._video.set(cv.CAP_PROP_POS_FRAMES, 0)
+        self._next_frame_cache = None
+
         self._play()
 
     def _play_or_pause(self) -> None:
@@ -346,6 +363,7 @@ class VisualizerQt:
 
         assert self._video.isOpened()
         self._video.set(cv.CAP_PROP_POS_FRAMES, frame)
+        self._next_frame_cache = None
 
         if not self._playing:
             self._play()
