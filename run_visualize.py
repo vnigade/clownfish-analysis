@@ -43,7 +43,7 @@ def main():
                       "--siminet_path": siminet_path,
                       "--n_classes": 52}
     parameters = " ".join([f"{key} {value}" for key, value in parameter_dict.items()])
-    call_string = f"python visualize.py {parameters} >> {output_file}"
+    call_string = f"python3 visualize.py {parameters} >> {output_file}"
     print(f"Executing: {call_string}")
     os.system(call_string)
 

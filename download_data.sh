@@ -14,4 +14,4 @@ function gd_download() {
 # PKUMMD data
 dst_dir="${data_dir}/"
 file="PKUMMD.tar.gz"
-gd_download 1PtxcBRu0lkhud_Bq6qg4uSXw6ANJ1CvG "$dst_dir" ${file}
+gd_download 1L7p8rcTmem9Ouwd4KU6WS-EpNWVbOZ-b "$dst_dir" ${file}

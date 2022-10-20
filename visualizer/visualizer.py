@@ -5,7 +5,7 @@ import cv2 as cv
 import sys
 
 from PyQt5.QtWidgets import QApplication
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Union, List
 
 from .opencv_visualizer import VisualizerOpenCV
 from .qt_visualizer import VisualizerQt
@@ -31,7 +31,7 @@ class Visualizer:
     # Public interface
     # =================================================================================================================================================================================================
 
-    def __init__(self, video_file: str, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: int = 30, use_qt: bool = True, console_arguments: Optional[list[str]] = None):
+    def __init__(self, video_file: str, window_size: int, predictions: PredictionList, true_actions: ActionList, label_dict: ActionLabels, target_fps: int = 30, use_qt: bool = True, console_arguments: Optional[List[str]] = None):
         # Define and initialize members
         self._visualizer: Union[VisualizerOpenCV, VisualizerQt]
         self._qt_application: Optional[QApplication] = None

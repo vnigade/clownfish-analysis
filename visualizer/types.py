@@ -1,14 +1,15 @@
 """
 Defines types for actions and predictions.
 """
+from typing import Tuple, List, Dict
 
 # Define types for actions and predictions
 Action = int
-Prediction = tuple[Action, Action, Action]
+Prediction = Tuple[Action, Action, Action]
 
 # Define list types
-ActionList = list[Action]
-PredictionList = list[Prediction]
+ActionList = List[Action]
+PredictionList = List[Prediction]
 
 # Define action/label dictionary
-ActionLabels = dict[Action, str]
+ActionLabels = Dict[Action, str]

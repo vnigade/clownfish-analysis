@@ -10,7 +10,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import *
 from PyQt5.QtChart import QChart, QChartView, QScatterSeries
-from typing import Optional
+from typing import Optional, List
 
 from .types import ActionList, ActionLabels, PredictionList
 
@@ -119,7 +119,7 @@ class MainWindow(QMainWindow):
         remote_charts_layout.setContentsMargins(0, 0, 0, 0)
         self.remoteChartWidget.setLayout(remote_charts_layout)
 
-    def resize_labels_to_required_size(self, labels: list[str]) -> None:
+    def resize_labels_to_required_size(self, labels: List[str]) -> None:
         # Get minimum size required for displaying the largest label
         # todo: This assumes that the font is the same for all action labels
         font = self.localActionLabel.font()
@@ -209,9 +209,9 @@ class VisualizerQt:
 
         # Precompute the prediction performance (in correct frames percentage) for each prediction model
         local_predictions, remote_predictions, fusion_predictions = zip(*predictions)
-        self._local_correct_frame_counts: list[float] = self._compute_correct_frame_percentages(local_predictions, true_actions)
-        self._remote_correct_frame_counts: list[float] = self._compute_correct_frame_percentages(remote_predictions, true_actions)
-        self._fusion_correct_frame_counts: list[float] = self._compute_correct_frame_percentages(fusion_predictions, true_actions)
+        self._local_correct_frame_counts: List[float] = self._compute_correct_frame_percentages(local_predictions, true_actions)
+        self._remote_correct_frame_counts: List[float] = self._compute_correct_frame_percentages(remote_predictions, true_actions)
+        self._fusion_correct_frame_counts: List[float] = self._compute_correct_frame_percentages(fusion_predictions, true_actions)
 
         # Extract video meta information
         self._frame_count: int = int(video.get(cv.CAP_PROP_FRAME_COUNT))
@@ -259,7 +259,7 @@ class VisualizerQt:
     # Private methods
     # =================================================================================================================================================================================================
 
-    def _compute_correct_frame_percentages(self, predictions: ActionList, true_actions: ActionList) -> list[float]:
+    def _compute_correct_frame_percentages(self, predictions: ActionList, true_actions: ActionList) -> List[float]:
         offset = self._window_size // 2
         correct = np.array(predictions) == np.array(true_actions)
         correct = correct[offset:]
